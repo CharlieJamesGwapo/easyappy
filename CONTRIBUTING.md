@@ -1,6 +1,6 @@
 # Contributing to EasyAppy
 
-Use Node.js 24+ and npm. Pure model tests and the build run on Linux CI; the supported desktop/package target is Apple Silicon macOS.
+Use Node.js 24+ and npm. Pure model tests and the build run on Linux CI; Mac packages target Apple Silicon ARM64 and Intel x64 on macOS 13 or later; Intel runtime testing requires separate Intel hardware.
 
 ```sh
 npm ci
