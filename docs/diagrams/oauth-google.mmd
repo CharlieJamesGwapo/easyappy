@@ -1,0 +1,37 @@
+sequenceDiagram
+  actor User
+  participant UI as Renderer
+  participant Bridge as Preload bridge
+  participant Main as Main + oauth.cjs
+  participant Vault as Encrypted local vault
+  participant Browser as System browser
+  participant Google as Google OAuth
+  participant Gmail as Gmail API
+
+  Note over User,Gmail: Implemented flow; live account authorization requires user-owned registered credentials and consent
+  User->>UI: Enter Desktop client ID and secret
+  UI->>Bridge: configureGoogle(credentials)
+  Bridge->>Main: Restricted IPC
+  Main->>Main: Validate Desktop client configuration
+  Main->>Vault: Encrypt and save client configuration
+  Main-->>UI: Configuration status only
+  User->>UI: Connect Gmail
+  UI->>Bridge: connectGoogle()
+  Bridge->>Main: Restricted IPC
+  Main->>Main: Generate random state and PKCE verifier/challenge
+  Main->>Main: Bind temporary 127.0.0.1 listener on random port
+  Main->>Browser: Open Google authorization URL
+  Browser->>Google: Request gmail.readonly with S256 PKCE
+  User->>Google: Sign in and grant read-only consent
+  Google-->>Browser: Redirect with code and state
+  Browser->>Main: GET loopback /oauth/callback
+  Main->>Main: Verify state, path and authorization result
+  Main->>Google: Exchange code + verifier + redirect URI
+  Google-->>Main: Access token, expiry and refresh token when supplied
+  Main->>Main: Require granted gmail.readonly scope
+  Main->>Vault: Encrypt token state and expiry
+  Main->>Gmail: Read account profile using bearer token
+  Gmail-->>Main: Account email
+  Main-->>UI: Connected status and account email, no tokens
+  Note over Main,Vault: Before API calls near expiry, main refreshes access tokens and saves updated encrypted state
+  Note over Main,Browser: Consent denial, invalid state, exchange failure or timeout does not create a successful connection

@@ -1,0 +1,35 @@
+flowchart LR
+  User["User"] --> Renderer
+  subgraph Renderer["Sandboxed renderer · easyappy://app"]
+    UI["app.js + views.js + connections.js\nScreens, forms and escaped HTML"]
+    Model["model.js\nValidation, transitions, metrics and actions"]
+    Store["storage.js\nPersistence and validated JSON backups"]
+    Capture["capture-runtime.js\nSync coordination and review inbox"]
+    Parser["email-import.js\nDeterministic email classification and deduplication"]
+    UI --> Model
+    Model --> Store
+    Capture --> Parser
+    Parser --> Model
+    Capture --> UI
+  end
+  Store <--> Tracker["localStorage · easyappy.v1\nApplication and interview state"]
+  Capture <--> Checkpoint["localStorage · easyappy.capture.v1\nSeen message IDs, review inbox and preferences"]
+  Seed["Packaged seed.json\nEmpty initial workspace"] --> Store
+  Store <--> Backup["User-selected JSON backup"]
+  Capture <--> Bridge["Preload contextBridge\nNarrow easyappyNative methods"]
+  UI --> Bridge
+  Bridge <--> Main
+  subgraph Main["Electron main process"]
+    IPC["IPC sender and main-frame checks"]
+    OAuth["OAuth, API calls and token refresh"]
+    Files["Native file dialog + mailparser\nSaved .eml import"]
+    Vault["safeStorage encryption\nconnections.encrypted"]
+    IPC --> OAuth
+    IPC --> Files
+    OAuth <--> Vault
+  end
+  OAuth <--> Google["Google authorization + Gmail API\ngmail.readonly"]
+  OAuth <--> GitHub["GitHub device authorization + profile API\nread:user"]
+  OAuth --> Browser["System browser\nProvider consent"]
+  Files --> IPC
+  UI -. "Validated external links" .-> Browser

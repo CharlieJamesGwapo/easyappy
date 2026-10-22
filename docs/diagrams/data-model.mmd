@@ -1,0 +1,101 @@
+erDiagram
+  TRACKER_STATE ||--o{ APPLICATION : contains
+  TRACKER_STATE ||--o{ INTERVIEW : contains
+  TRACKER_STATE ||--|| SETTINGS : contains
+  CAPTURE_STATE ||--o{ REVIEW_CANDIDATE : retains
+  CAPTURE_STATE ||--o{ SEEN_MESSAGE_ID : acknowledges
+  CREDENTIAL_VAULT ||--o| GOOGLE_CLIENT : stores
+  CREDENTIAL_VAULT ||--o| GMAIL_GRANT : stores
+  CREDENTIAL_VAULT ||--o| GITHUB_GRANT : stores
+
+  TRACKER_STATE {
+    int version "1"
+  }
+  APPLICATION {
+    string id PK
+    string company
+    string role
+    string platform
+    string url "HTTP or HTTPS only"
+    string location
+    string stage
+    string appliedDate "YYYY-MM-DD or empty"
+    string verifiedDate "YYYY-MM-DD or empty"
+    boolean confirmed
+    boolean campaign
+    number salaryPHP "nullable"
+    number salaryUSD "nullable"
+    string salaryNote
+    string resumeName "filename, not uploaded document"
+    string coverStatus
+    string notes "includes email evidence markers when imported"
+    string nextAction
+    string followUpDate "YYYY-MM-DD or empty"
+    boolean archived
+    string updatedAt "timestamp with offset or empty"
+  }
+  INTERVIEW {
+    string id PK
+    string company
+    string role
+    string kind "Interview, Orientation or Screening"
+    string stage
+    string start "timestamp with offset or empty"
+    string end "timestamp with offset or empty"
+    string url
+    string recruiter
+    string contact
+    string prepStatus
+    string prepNotes
+    string notes
+    string followUpDate
+    boolean archived
+  }
+  SETTINGS {
+    int goal
+    int followUpDays
+  }
+  CAPTURE_STATE {
+    int version "1"
+    boolean auto
+    string lastSync
+  }
+  REVIEW_CANDIDATE {
+    string id PK
+    string messageId
+    string kind
+    string confidence
+    string company
+    string role
+    string url
+    string date "evidenced email date or empty"
+    string stage
+    string subject
+    string from
+    string platform
+    string reason
+    string recordId "optional reviewed-record link"
+    boolean requiresIdentityCheck "blocks ambiguous additions"
+  }
+  SEEN_MESSAGE_ID {
+    string messageId PK
+  }
+  CREDENTIAL_VAULT {
+    string location "Electron userData directory"
+    string protection "Electron safeStorage encryption"
+  }
+  GOOGLE_CLIENT {
+    string clientId
+    string clientSecret
+  }
+  GMAIL_GRANT {
+    string access_token
+    string refresh_token "when provided"
+    number expiresAt
+    string scope
+  }
+  GITHUB_GRANT {
+    string access_token
+    string profileLogin
+    string profileURL
+  }

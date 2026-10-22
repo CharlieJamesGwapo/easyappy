@@ -1,0 +1,31 @@
+sequenceDiagram
+  actor User
+  participant UI as Renderer
+  participant Main as Main through preload IPC
+  participant Browser as System browser
+  participant GitHub
+  participant Vault as Encrypted local vault
+
+  Note over User,Vault: Requires a user-registered GitHub OAuth App with Device Flow enabled
+  User->>UI: Enter OAuth App client ID and Connect
+  UI->>Main: startGitHub(clientId)
+  Main->>GitHub: Request device code with read:user scope
+  GitHub-->>Main: Device code, user code, interval and expiry
+  Main->>Browser: Open github.com/login/device
+  Main-->>UI: User code, polling interval and expiry
+  User->>GitHub: Enter displayed code and authorize
+  User->>UI: Check authorization
+  UI->>Main: pollGitHub()
+  Main->>Main: Enforce polling interval and expiry
+  Main->>GitHub: Exchange device code
+  alt Still pending or slow down
+    GitHub-->>Main: Pending or increased interval
+    Main-->>UI: Waiting status
+  else Authorized
+    GitHub-->>Main: Access token
+    Main->>GitHub: Read authenticated profile
+    GitHub-->>Main: Login and profile URL
+    Main->>Vault: Encrypt token and profile state
+    Main-->>UI: Connected profile status, no token
+  end
+  Note over UI,GitHub: Profile identity only; GitHub does not provide job-application history

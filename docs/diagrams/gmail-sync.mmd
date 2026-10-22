@@ -1,0 +1,28 @@
+flowchart TD
+  Start["User sync, post-connect sync or five-minute timer\nRenderer window must remain open"] --> Connected{"Gmail connected?"}
+  Connected -- No --> Setup["Configure Desktop OAuth client\nand authorize Gmail"]
+  Connected -- Yes --> IPC["Preload sends current seen IDs\nMain verifies IPC caller"]
+  IPC --> Token{"Access token near expiry?"}
+  Token -- Yes --> Refresh["Refresh in main process\nSave encrypted token state"]
+  Token -- No --> Query
+  Refresh --> Query["List last 30 days of matching messages\nExclude spam, trash and sent mail\nAt most newest 500 matches per pass"]
+  Query --> Fetch["Fetch unseen messages in full Gmail format"]
+  Fetch --> Parse["Decode multipart text/HTML\nClassify with deterministic templates"]
+  Parse --> Class{"Classification"}
+  Class -- "Alert, outgoing or irrelevant" --> Ignored["No tracker candidate"]
+  Class -- "Invitation, rejection, offer or uncertainty" --> Review["Retain candidate for human review"]
+  Class -- "Exact supported confirmation" --> Auto{"Auto-capture enabled?"}
+  Auto -- No --> Review
+  Auto -- Yes --> Match["Match canonical job ID/URL\nThen unambiguous normalized company + role"]
+  Match --> Ambiguous{"Multiple possible records?"}
+  Ambiguous -- Yes --> Review
+  Ambiguous -- No --> Apply["Add or update confirmed application\nPreserve later stages and known dates\nDo not automatically include in campaign"]
+  Apply --> Save["Persist validated tracker state\nAlso persist on zero-change retries"]
+  Review --> Save
+  Ignored --> Save
+  Save --> Success{"Tracker saved?"}
+  Success -- No --> Retry["Report error\nDo not acknowledge messages; retry later"]
+  Success -- Yes --> CaptureSave["Persist seen IDs and review inbox"]
+  CaptureSave --> Saved{"Checkpoint saved?"}
+  Saved -- No --> Rollback["Restore previous capture state\nRetry safely without duplicate applications"]
+  Saved -- Yes --> Done["Render results and last-sync time"]

@@ -1,0 +1,43 @@
+{
+  "name": "easyappy",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "check": "node scripts/check.mjs",
+    "build": "node scripts/build.mjs",
+    "start": "npm run build && electron .",
+    "desktop": "npm start",
+    "dev": "npm start",
+    "preview": "python3 -m http.server 4318 --bind 127.0.0.1 --directory src/renderer",
+    "package:mac": "npm run build && node scripts/package-mac.mjs",
+    "verify": "npm run check && npm test && npm run build",
+    "format": "prettier --write src scripts/*.mjs tests package.json .github/workflows/*.yml",
+    "privacy": "node scripts/privacy-check.mjs"
+  },
+  "version": "0.2.0",
+  "description": "Local-first desktop job application and interview tracker",
+  "main": "dist/main/index.cjs",
+  "author": "EasyAppy contributors",
+  "devDependencies": {
+    "@electron/packager": "20.3.0",
+    "electron": "45.0.0",
+    "prettier": "3.9.10"
+  },
+  "dependencies": {
+    "mailparser": "3.12.2"
+  },
+  "productName": "EasyAppy",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CharlieJamesGwapo/easyappy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CharlieJamesGwapo/easyappy/issues"
+  },
+  "homepage": "https://github.com/CharlieJamesGwapo/easyappy#readme",
+  "license": "MIT"
+}

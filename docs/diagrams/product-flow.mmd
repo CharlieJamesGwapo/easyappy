@@ -1,0 +1,16 @@
+flowchart TD
+  Launch[Open desktop app] --> Workspace[Empty local workspace]
+  Workspace --> Manual[Add an application manually]
+  Workspace --> Paste[Paste a relevant email]
+  Workspace --> Connect[Configure your Gmail OAuth client]
+  Connect --> Consent[Grant read-only access in system browser]
+  Consent --> Sync[Sync matching recent messages]
+  Paste --> Review[Review extracted details]
+  Sync --> Classify{Clear supported confirmation?}
+  Classify -- Yes --> Match[Find canonical job identity]
+  Match --> Save[Save validated application]
+  Classify -- No --> Review
+  Review --> Resolve[Confirm employer, role, status and timing]
+  Resolve --> Save
+  Manual --> Save
+  Save --> Overview[Overview and Action Center]
