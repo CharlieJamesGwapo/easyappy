@@ -17,9 +17,22 @@ EasyAppy helps answer: **Where did I apply, what is still pending, and what shou
 
 The public app starts with an **empty workspace**. To explore the interface, import [docs/demo.json](docs/demo.json) through Settings → Import backup in a disposable profile. Screenshots and fixtures use synthetic data, not a real candidate’s applications or mailbox.
 
-## Run locally
+## Download for Mac
 
-Use Node.js 24+ and npm. The supported desktop packaging target is Apple Silicon macOS.
+[**EasyAppy v0.2.0 — community preview**](https://github.com/CharlieJamesGwapo/easyappy/releases/tag/v0.2.0) supports macOS **13 or later**. No Node.js or OAuth setup is needed for manual tracking.
+
+| Mac                           | Installer                                                                                                                 | ZIP alternative                                                                                                  |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Apple Silicon (M-series chip) | [Download ARM64 DMG](https://github.com/CharlieJamesGwapo/easyappy/releases/download/v0.2.0/EasyAppy-0.2.0-mac-arm64.dmg) | [ARM64 ZIP](https://github.com/CharlieJamesGwapo/easyappy/releases/download/v0.2.0/EasyAppy-0.2.0-mac-arm64.zip) |
+| Intel processor               | [Download Intel DMG](https://github.com/CharlieJamesGwapo/easyappy/releases/download/v0.2.0/EasyAppy-0.2.0-mac-x64.dmg)   | [Intel ZIP](https://github.com/CharlieJamesGwapo/easyappy/releases/download/v0.2.0/EasyAppy-0.2.0-mac-x64.zip)   |
+
+Open the DMG, drag **EasyAppy** to **Applications**, eject the disk image, then launch from Applications. See the [installation guide](docs/install-macos.md) for choosing your Mac architecture, checksums, first launch and upgrades.
+
+The app is **ad-hoc signed, not Developer ID signed or notarized**. macOS may show a security warning; follow the guide only if you trust the official download. The Intel package is architecture/signature checked on an Apple Silicon host and has not been runtime-tested on an actual Intel Mac.
+
+## Build from source
+
+Use Node.js 24+ and npm. Mac release packaging supports `arm64` and `x64`.
 
 ```sh
 npm ci
@@ -87,9 +100,10 @@ Read the [product flow](docs/product-flow.md), [architecture](docs/architecture.
 npm run verify
 npm audit --omit=dev
 npm run package:mac
+npm run release:mac
 ```
 
-Verification checks syntax, repository structure, documentation links, behavior tests and the generated runtime. CI runs verification and the production dependency audit. Packaging on macOS creates `release/EasyAppy-darwin-arm64/EasyAppy.app` and checks its local ad-hoc signature. Developer ID signing and notarization are not configured. `dist/` and `release/` are generated and excluded from source control.
+Verification checks syntax, repository structure, documentation links, behavior tests and the generated runtime. CI runs verification and the production dependency audit. `package:mac` creates the local Apple Silicon app bundle and checks its ad-hoc signature. `release:mac` prepares versioned ARM64 and Intel DMG/ZIP assets with checksums and install instructions. Developer ID signing and notarization are not configured. `dist/` and `release/` are generated and excluded from source control.
 
 ## Privacy and current limits
 

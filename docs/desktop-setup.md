@@ -1,6 +1,8 @@
 # EasyAppy desktop setup
 
-EasyAppy is an Electron desktop app with its own window and local storage. The supported packaging target is Apple Silicon macOS. It does not require a browser tab or development server after packaging.
+EasyAppy is an Electron desktop app with its own window and local storage. The Mac release provides Apple Silicon and Intel packages for macOS 13 or later. It does not require a browser tab or development server after installation.
+
+For the downloadable app, start with [Install on macOS](install-macos.md). Manual tracking needs neither Node.js nor OAuth. The instructions below cover source builds and optional account setup.
 
 ## Build and run
 
@@ -18,7 +20,15 @@ For a local Mac bundle:
 npm run package:mac
 ```
 
-This creates `release/EasyAppy-darwin-arm64/EasyAppy.app` and verifies an ad-hoc signature. It is not Developer ID signed or notarized. Packaging is macOS-only. `dist/` and `release/` are generated from `src/` and excluded from Git.
+The default is ARM64. Use `npm run package:mac -- --arch=x64` for Intel or `npm run package:mac -- --arch=all` for both.
+
+This creates `release/EasyAppy-darwin-arm64/EasyAppy.app` and verifies an ad-hoc signature. To prepare both ARM64 and Intel release assets:
+
+```sh
+npm run release:mac
+```
+
+The release task creates versioned DMG/ZIP downloads, `SHA256SUMS.txt` and `INSTALL-MAC.md`. Packaging is macOS-only. The app is not Developer ID signed or notarized. Intel artifacts are architecture/signature checked on an Apple Silicon host, without runtime testing on an actual Intel Mac. `dist/` and `release/` are generated from `src/` and excluded from Git.
 
 The default workspace is empty. To try fictional records, import [demo.json](demo.json) through Settings → Import backup in an isolated test profile. A replacement import changes the current workspace, so export a backup first when using an existing profile. Screenshots in the public documentation use this synthetic fixture.
 

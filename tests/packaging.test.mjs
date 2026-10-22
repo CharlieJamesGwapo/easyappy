@@ -21,6 +21,7 @@ test('desktop packaging admits runtime files and excludes local credentials and 
   for (const file of [
     '',
     'package.json',
+    'LICENSE',
     'dist',
     'dist/main/index.cjs',
     'dist/preload/index.cjs',

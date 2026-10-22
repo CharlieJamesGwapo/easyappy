@@ -4,8 +4,6 @@ node_modules/
 dist/
 release/
 .openai/
-.env
-.env.*
 *.encrypted
 *.encrypted.tmp
 client_secret*.json
@@ -17,7 +15,6 @@ coverage/
 .DS_Store
 
 # Local workspaces and personal artifacts never belong in source control.
-.env*
 .private/
 data/
 backups/
@@ -32,3 +29,4 @@ output/
 *.eml
 !tests/fixtures/*.eml
 *backup*.json
+config.bat
